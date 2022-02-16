@@ -1,14 +1,11 @@
-const fs = await import("fs")
 const { List } = await import("immutable")
 
 const { WordleTrie } = await import("./trie.mjs")
-const { ALPHABET, Counter, newImmutableLetterCounter } = await import("./counters.mjs")
-const { maxKeyByVal, findIndices, areDisjoint, union } = await import("./utilz.mjs")
+const { ALPHABET, Counter, newImmutableLetterCounter } = await import("./data-structs.mjs")
+const { maxKeyByVal, findIndices, areDisjoint, loadWords } = await import("./utilz.mjs")
 
 
-const solutionSet = new Set(fs.readFileSync("./solutions.txt", "utf8").trim().split("\n").map(word => word.trim()))
-let guessSet = new Set(fs.readFileSync("./guesses.txt", "utf8").trim().split("\n").map(word => word.trim()))
-guessSet = union(guessSet, solutionSet)
+const { solutionSet, guessSet } = loadWords()
 
 
 export class Player {

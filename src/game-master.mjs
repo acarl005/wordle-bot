@@ -1,13 +1,10 @@
-const fs = await import("fs")
 const { default: chalk } = await import("chalk")
 
-const { DefaultDict } = await import("./default-dict.mjs")
-const { union } = await import("./utilz.mjs")
+const { DefaultDict } = await import("./data-structs.mjs")
+const { loadWords } = await import("./utilz.mjs")
 
 
-const solutionArr = fs.readFileSync("./solutions.txt", "utf8").trim().split("\n").map(word => word.trim())
-let guessSet = new Set(fs.readFileSync("./guesses.txt", "utf8").trim().split("\n").map(word => word.trim()))
-guessSet = union(guessSet, solutionArr)
+const { solutionArr, guessSet } = loadWords()
 
 
 class PlayerError extends Error {}
@@ -76,9 +73,9 @@ export class GameMaster {
     for (let i = 0; i < this.guesses.length; i++) {
       const guess = this.guesses[i]
       if (i === 0) {
-        console.log("╔═ ═╦═ ═╦═ ═╦═ ═╦═ ═╗")
+        console.log("╔═══╦═══╦═══╦═══╦═══╗")
       } else {
-        console.log("╠═ ═╬═ ═╬═ ═╬═ ═╬═ ═╣")
+        console.log("╠═══╬═══╬═══╬═══╬═══╣")
       }
       let row = []
       for (let j = 0; j < 5; j++) {
@@ -86,7 +83,7 @@ export class GameMaster {
       }
       console.log("║" + row.join("║") + "║")
     }
-    console.log("╚═ ═╩═ ═╩═ ═╩═ ═╩═ ═╝")
+    console.log("╚═══╩═══╩═══╩═══╩═══╝")
   }
 }
 
