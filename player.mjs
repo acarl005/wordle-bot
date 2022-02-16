@@ -1,48 +1,27 @@
 const fs = await import("fs")
-const { List, Map } = await import("immutable")
+const { List } = await import("immutable")
 
 const { WordleTrie } = await import("./trie.mjs")
+const { ALPHABET, Counter, newImmutableLetterCounter } = await import("./counters.mjs")
+const { maxKeyByVal, findIndices, areDisjoint, union } = await import("./utilz.mjs")
 
 
 const solutionSet = new Set(fs.readFileSync("./solutions.txt", "utf8").trim().split("\n").map(word => word.trim()))
-const guessSet = new Set(fs.readFileSync("./guesses.txt", "utf8").trim().split("\n").map(word => word.trim()))
+let guessSet = new Set(fs.readFileSync("./guesses.txt", "utf8").trim().split("\n").map(word => word.trim()))
+guessSet = union(guessSet, solutionSet)
 
 
-class Counter {
-  constructor() {
-    return new Proxy({}, {
-      get: (target, name) => name in target ? target[name] : 0
-    })
-  }
-}
+export class Player {
 
+  static greenVal = 2
+  static yellowVal = 1
 
-const ALPHABET = [
-  "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
-]
-
-
-function newImmutableLetterCounter() {
-  let counter = new Map
-  for (let ch of ALPHABET) {
-    counter = counter.set(ch, 0)
-  }
-  return counter
-}
-
-
-const GREEN_VAL = 2
-const YELLOW_VAL = 1
-
-
-class Player {
   constructor(guessSet, solutionSet) {
     this.solutionTrie = new WordleTrie
     this.guessTrie = new WordleTrie
 
     // all solutions are also guesses
     for (let solution of solutionSet) {
-      guessSet.add(solution)
       this.solutionTrie.add(solution)
     }
 
@@ -75,7 +54,6 @@ class Player {
 
 
   calculateMaxValueGuess(verbose) {
-    console.log(this.masterWordLetterCounter)
     const maxValInfo = this._calculateMaxValueGuess(this.remainingSolutionTrie || this.guessTrie, newImmutableLetterCounter(), 0, 0, new List, verbose)
     maxValInfo.debug = Array.from(maxValInfo.debug)
     return maxValInfo
@@ -101,8 +79,8 @@ class Player {
       }
       const greenWeight = this.positionLetterCounts[wordPosition][nextLetter]
       const yellowWeight = this.masterWordLetterCounter[nextLetter][countForThisLetter]
-      let greenVal = greenWeight * GREEN_VAL
-      let yellowVal = yellowWeight * YELLOW_VAL
+      let greenVal = greenWeight * Player.greenVal
+      let yellowVal = yellowWeight * Player.yellowVal
       if (wordPosition in this.knowledge.greens) {
         greenVal = 0
         if (this.knowledge.greens[wordPosition] === nextLetter) {
@@ -121,7 +99,7 @@ class Player {
       if (verbose) {
         console.log(nextLetter, sumExpectedValue, wordPosition, expectedValue)
       }
-      const { word, value, debug } = this._calculateMaxValueGuess(guessTrie.children[nextLetter], updatedLetterCounter, sumExpectedValue + expectedValue, wordPosition + 1, debugList.push([expectedValue, `${yellowVal} (${yellowWeight} * ${YELLOW_VAL})`, `${greenVal} (${greenWeight} * ${GREEN_VAL})`]), verbose)
+      const { word, value, debug } = this._calculateMaxValueGuess(guessTrie.children[nextLetter], updatedLetterCounter, sumExpectedValue + expectedValue, wordPosition + 1, debugList.push([expectedValue, `${yellowVal} (${yellowWeight} * ${Player.yellowVal})`, `${greenVal} (${greenWeight} * ${Player.greenVal})`]), verbose)
       if (verbose) {
         console.log({ word, value, debug })
       }
@@ -151,7 +129,7 @@ class Player {
       foundCandidates.push(prefix)
       return
     }
-    
+
     if (wordPosition in this.knowledge.greens) {
       let nextLetter = this.knowledge.greens[wordPosition]
       if (nextLetter in solutionTrie.children) {
@@ -240,32 +218,6 @@ class Player {
   }
 }
 
-
-function maxKeyByVal(obj) {
-  let maxKey = Object.keys(obj)[0]
-  let maxVal = obj[maxKey]
-  for (let [k, v] of Object.entries(obj)) {
-    if (v > maxVal) {
-      maxKey = k
-      maxVal = v
-    }
-  }
-  return maxKey
-}
-
-
-function findIndices(word, ch) {
-  return [...word.matchAll(ch)].map(m => m.index)
-}
-
-function areDisjoint(s1, s2) {
-  for (let el of s1) {
-    if (s2.has(el)) {
-      return false
-    }
-  }
-  return true
-}
 
 const assert = await import("assert")
 
