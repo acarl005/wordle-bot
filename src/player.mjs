@@ -2,7 +2,7 @@ const { List } = await import("immutable")
 
 const { WordleTrie } = await import("./trie.mjs")
 const { ALPHABET, Counter, newImmutableLetterCounter } = await import("./data-structs.mjs")
-const { maxKeyByVal, findIndices, areDisjoint, loadWords } = await import("./utilz.mjs")
+const { maxKeyByVal, findIndices, areDisjoint, loadWords, intersect } = await import("./utilz.mjs")
 
 
 const { solutionSet, guessSet } = loadWords()
@@ -184,22 +184,31 @@ export class Player {
       }
       if (color === "y") {
         const atLeast = allYellows[letter] + allGreens[letter]
-        if (letter in newKnowledge.yellows) {
-          newKnowledge.yellows[letter].positions.add(i)
-          newKnowledge.yellows[letter].atLeast = Math.max(atLeast, this.knowledge.yellows[letter].atLeast)
-          if (allBlacks.has(letter)) {
-            newKnowledge.yellows[letter].atMost = atLeast
-          }
-        } else {
-          newKnowledge.yellows[letter] = { positions: new Set([i]), atLeast }
+        if (!(letter in newKnowledge.yellows)) {
+          newKnowledge.yellows[letter] = { positions: new Set }
+        }
+        newKnowledge.yellows[letter].positions.add(i)
+        newKnowledge.yellows[letter].atLeast = Math.max(atLeast, this.knowledge.yellows[letter]?.atLeast || 0)
+        if (allBlacks.has(letter)) {
+          newKnowledge.yellows[letter].atMost = atLeast
         }
       }
       if (color === "g") {
         newKnowledge.greens[i] = letter
-        if (letter in newKnowledge.greensInv) {
-          newKnowledge.greensInv[letter].add(i)
-        } else {
-          newKnowledge.greensInv[letter] = new Set([i])
+        if (!(letter in newKnowledge.greensInv)) {
+          newKnowledge.greensInv[letter] = new Set
+        }
+        newKnowledge.greensInv[letter].add(i)
+        if (allBlacks.has(letter) && !allYellows[letter]) {
+          const exactCount = allGreens[letter]
+          if (!(letter in newKnowledge.yellows)) {
+            newKnowledge.yellows[letter] = { positions: new Set }
+          }
+          for (let i of intersect(findIndices(colors, "b"), findIndices(wordGuessed, letter))) {
+            newKnowledge.yellows[letter].positions.add(i)
+          }
+          newKnowledge.yellows[letter].atLeast = exactCount
+          newKnowledge.yellows[letter].atMost = exactCount
         }
       }
     }

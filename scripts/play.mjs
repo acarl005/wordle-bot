@@ -28,6 +28,8 @@ function parseDate(val) {
 program
   .option("-w, --word <word>", "The word to set the solution to.", validateWord)
   .option("-d, --date <YYYY-mm-dd>", "Pick the solution based on this date.", parseDate)
+  .option("--no-bot", "Play without suggestions.")
+  .option("-o --optimal", "Automatically take the optimal suggestions.")
 
 program.parse(process.argv)
 
@@ -45,7 +47,12 @@ if (options.word) {
 
 class InteractiveGameLoop extends GameLoop {
   async nextGuess(maxValGuess) {
-    console.log(maxValGuess)
+    if (options.bot) {
+      console.log(maxValGuess)
+    }
+    if (options.optimal) {
+      return super.nextGuess(maxValGuess)
+    }
     const response = await prompts({
       type: "text",
       name: "guess",
@@ -74,6 +81,13 @@ class InteractiveGameLoop extends GameLoop {
 
   endTurn() {
     this.gameMaster.printPrettyFeedback()
+    console.log(
+      JSON.stringify(
+        this.player.knowledge,
+        (_, value) => (value instanceof Set ? [...value] : value),
+        4
+      )
+    )
   }
 }
 

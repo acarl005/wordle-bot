@@ -47,6 +47,20 @@ export function union(s1, s2) {
 }
 
 
+export function intersect(s1, s2) {
+  const result = new Set
+  s1 = new Set(s1)
+  s2 = new Set(s2)
+  const un = union(s1, s2)
+  for (let el of un) {
+    if (s1.has(el) && s2.has(el)) {
+      result.add(el)
+    }
+  }
+  return result
+}
+
+
 const defaultSolutionFilePath = path.join(__dirname, "..", "word-lists", "solutions.txt")
 const defaultGuessFilePath = path.join(__dirname, "..", "word-lists", "guesses.txt")
 
