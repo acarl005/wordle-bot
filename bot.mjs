@@ -1,7 +1,7 @@
-const fs = require("fs")
-const { List, Map } = require('immutable')
+const fs = await import("fs")
+const { List, Map } = await import("immutable")
 
-const WordleTrie = require("./trie")
+const { WordleTrie } = await import("./trie.mjs")
 
 
 const solutionSet = new Set(fs.readFileSync("./solutions.txt", "utf8").trim().split("\n").map(word => word.trim()))
@@ -267,7 +267,7 @@ function areDisjoint(s1, s2) {
   return true
 }
 
-const assert = require("assert")
+const assert = await import("assert")
 
 let player = new Player(guessSet, solutionSet)
 

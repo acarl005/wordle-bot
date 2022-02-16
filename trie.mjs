@@ -1,4 +1,4 @@
-class WordleTrie {
+export class WordleTrie {
   constructor() {
     this.isMember = false
     this.isSolution = false
@@ -33,5 +33,3 @@ class WordleTrie {
     return this.children[nextLetter].contains(word.slice(1))
   }
 }
-
-module.exports = WordleTrie
