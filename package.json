@@ -2,13 +2,17 @@
   "name": "wordle-bot",
   "version": "1.0.0",
   "description": "A program that uses statistics to play Wordle (almost) optimally",
-  "main": "main.js",
+  "main": "./src/player.mjs",
+  "bin": "./scripts/play.mjs",
   "scripts": {
+    "start": "node ./scripts/play.mjs",
+    "eval": "node ./scripts/eval.mjs",
     "test": "ava"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "babar": "^0.2.0",
     "chalk": "^5.0.0",
     "cli-progress": "^3.10.0",
     "commander": "^9.0.0",

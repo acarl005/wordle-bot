@@ -22,14 +22,12 @@ test.beforeEach(t => {
   t.context.player = new Player(guessSet, solutionSet)
 })
 
-test("aroma", async t => {
-  const gm = new GameMaster(guessSet, "aroma")
-  const gameLoop = new TestGameLoop(gm, t.context.player)
-  await t.notThrowsAsync(gameLoop.play())
-})
+const wordsToTest = ["aroma", "death", "latch"]
 
-test("death", async t => {
-  const gm = new GameMaster(guessSet, "death")
-  const gameLoop = new TestGameLoop(gm, t.context.player)
-  await t.notThrowsAsync(gameLoop.play())
-})
+for (let word of wordsToTest) {
+  test(word, async t => {
+    const gm = new GameMaster(guessSet, word)
+    const gameLoop = new TestGameLoop(gm, t.context.player)
+    await t.notThrowsAsync(gameLoop.play())
+  })
+}

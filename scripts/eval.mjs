@@ -1,16 +1,18 @@
 const { default: cliProgress } = await import("cli-progress")
+const { default: babar } = await import("babar")
 
 const { GameLoop } = await import("../src/game-loop.mjs")
 const { GameMaster } = await import("../src/game-master.mjs")
 const { Player } = await import("../src/player.mjs")
 const { loadWords } = await import("../src/utilz.mjs")
-const { Counter } = await import("../src/data-structs.mjs")
+const { Counter, DefaultDict } = await import("../src/data-structs.mjs")
 
 
 const { solutionArr, solutionSet, guessSet } = loadWords()
 
 
-const scores = new Counter
+const scoreCounts = new Counter
+const scoresToWords = new DefaultDict(Array)
 
 
 class EvalGameLoop extends GameLoop {
@@ -19,7 +21,8 @@ class EvalGameLoop extends GameLoop {
   }
   
   onWin(score) {
-    scores[score]++
+    scoreCounts[score]++
+    scoresToWords[score].push(this.gameMaster.solution)
   }
 }
 
@@ -36,8 +39,10 @@ for (let solution of solutionArr) {
 }
 bar1.stop()
 
-console.log(scores)
-console.log(weightedMean(scores))
+console.log(scoreCounts)
+const barData = Object.entries(scoreCounts).map(([k, v]) => [+k, v])
+console.log(babar(barData, { minY: 0.00001 }))
+console.log(weightedMean(scoreCounts))
 
 function weightedMean(nums) {
   let numerator = 0
@@ -48,3 +53,6 @@ function weightedMean(nums) {
   }
   return numerator / denominator
 }
+
+console.log(scoresToWords[8])
+console.log(scoresToWords[7])

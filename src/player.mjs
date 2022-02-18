@@ -10,7 +10,7 @@ const { solutionSet, guessSet } = loadWords()
 
 export class Player {
 
-  static greenVal = 2
+  static greenVal = 1.2
   static yellowVal = 1
 
   constructor(guessSet, solutionSet) {
@@ -56,16 +56,13 @@ export class Player {
     return maxValInfo
   }
 
-  _calculateMaxValueGuess(guessTrie, letterCounter, sumExpectedValue, wordPosition, debugList, verbose) {
+  _calculateMaxValueGuess(guessTrie, letterCounter, sumExpectedValue, wordPosition, debugList) {
     if (wordPosition === 5) {
       return { word: "", value: sumExpectedValue, debug: debugList }
     }
     const childVals = {}
     const childDebug = {}
     for (let nextLetter in guessTrie.children) {
-      if (verbose) {
-        console.log(nextLetter, sumExpectedValue, wordPosition)
-      }
       if (this.knowledge.blacks.has(nextLetter)) {
         continue
       }
@@ -93,20 +90,11 @@ export class Player {
         }
       }
       const expectedValue = greenVal + yellowVal
-      if (verbose) {
-        console.log(nextLetter, sumExpectedValue, wordPosition, expectedValue)
-      }
-      const { word, value, debug } = this._calculateMaxValueGuess(guessTrie.children[nextLetter], updatedLetterCounter, sumExpectedValue + expectedValue, wordPosition + 1, debugList.push([expectedValue, `${yellowVal} (${yellowWeight} * ${Player.yellowVal})`, `${greenVal} (${greenWeight} * ${Player.greenVal})`]), verbose)
-      if (verbose) {
-        console.log({ word, value, debug })
-      }
+      const { word, value, debug } = this._calculateMaxValueGuess(guessTrie.children[nextLetter], updatedLetterCounter, sumExpectedValue + expectedValue, wordPosition + 1, debugList.push([expectedValue, `${yellowVal} (${yellowWeight} * ${Player.yellowVal})`, `${greenVal} (${greenWeight} * ${Player.greenVal})`]))
       if (value !== undefined) {
         childVals[nextLetter + word] = value
         childDebug[nextLetter + word] = debug
       }
-    }
-    if (verbose) {
-      console.log(childVals)
     }
     if (Object.keys(childVals).length === 0) {
       return { word: "", value: undefined, debug: undefined }
@@ -215,7 +203,7 @@ export class Player {
     this.knowledge = newKnowledge
     const remainingCandidates = this.getRemainingCandidates()
     this.computeStats(remainingCandidates)
-    if (remainingCandidates.length < 6) {
+    if (remainingCandidates.length < 5) {
       this.remainingSolutionTrie = new WordleTrie
       for (let candidate of remainingCandidates) {
         this.remainingSolutionTrie.add(candidate)
@@ -223,34 +211,3 @@ export class Player {
     }
   }
 }
-
-
-const assert = await import("assert")
-
-let player = new Player(guessSet, solutionSet)
-
-//let maxValGuess
-//maxValGuess = player.calculateMaxValueGuess()
-//console.log(maxValGuess)
-//assert.strictEqual(maxValGuess.word, "soare")
-//player.giveFeedback("soare", "bbbyy")
-//console.log(JSON.stringify(player.knowledge, (_key, value) => (value instanceof Set ? [...value] : value)))
-//console.log(player.getRemainingCandidates())
-
-
-//maxValGuess = player.calculateMaxValueGuess()
-//console.log(maxValGuess)
-//assert.strictEqual(maxValGuess.word, "rider")
-//player.giveFeedback("rider", "bbggg")
-//console.log(JSON.stringify(player.knowledge, (_key, value) => (value instanceof Set ? [...value] : value)))
-//console.log(player.getRemainingCandidates())
-
-
-//maxValGuess = player.calculateMaxValueGuess()
-//console.log(maxValGuess)
-//player.giveFeedback("under", "bbggg")
-//console.log(player.getRemainingCandidates())
-
-
-//maxValGuess = player.calculateMaxValueGuess()
-//console.log(maxValGuess)

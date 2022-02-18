@@ -11,9 +11,9 @@ class PlayerError extends Error {}
 
 
 const COLOR_MAP = {
-  "g": "bgGreen",
-  "b": "bgGrey",
-  "y": "bgYellow"
+  "g": str => chalk.whiteBright(chalk.bgGreen(str)),
+  "b": str => chalk.whiteBright(chalk.bgGrey(str)),
+  "y": str => chalk.whiteBright(chalk.bgYellow(str))
 }
 
 
@@ -79,7 +79,7 @@ export class GameMaster {
       }
       let row = []
       for (let j = 0; j < 5; j++) {
-        row.push(chalk[COLOR_MAP[guess.feedback[j]]](` ${guess.word[j]} `))
+        row.push(COLOR_MAP[guess.feedback[j]](` ${guess.word[j]} `))
       }
       console.log("║" + row.join("║") + "║")
     }
