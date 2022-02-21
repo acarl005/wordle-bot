@@ -914,7 +914,6 @@ birsy
 bises
 bisks
 bisom
-bitch
 biter
 bites
 bitos
@@ -1562,7 +1561,6 @@ chimo
 chimp
 chine
 ching
-chink
 chino
 chins
 chips
@@ -1818,7 +1816,6 @@ cooly
 coomb
 cooms
 coomy
-coons
 coops
 coopt
 coost
@@ -2101,7 +2098,6 @@ dargs
 daric
 daris
 darks
-darky
 darns
 darre
 darts
@@ -2621,9 +2617,6 @@ dwile
 dwine
 dyads
 dyers
-dyked
-dykes
-dykey
 dykon
 dynel
 dynes
@@ -2876,9 +2869,7 @@ faena
 faery
 faffs
 faffy
-faggy
 fagin
-fagot
 faiks
 fails
 faine
@@ -3650,7 +3641,6 @@ gooby
 goods
 goofs
 googs
-gooks
 gooky
 goold
 gools
@@ -4130,7 +4120,6 @@ homes
 homey
 homie
 homme
-homos
 honan
 honda
 honds
@@ -4752,7 +4741,6 @@ kiers
 kieve
 kievs
 kight
-kikes
 kikoi
 kiley
 kilim
@@ -5110,7 +5098,6 @@ lepta
 lered
 leres
 lerps
-lesbo
 leses
 lests
 letch
@@ -7206,7 +7193,6 @@ pursy
 purty
 puses
 pusle
-pussy
 putid
 puton
 putti
@@ -8450,7 +8436,6 @@ slums
 slurb
 slurs
 sluse
-sluts
 slyer
 slype
 smaak
@@ -8695,14 +8680,11 @@ spews
 spewy
 spial
 spica
-spick
-spics
 spide
 spier
 spies
 spiff
 spifs
-spiks
 spile
 spims
 spina
@@ -10223,7 +10205,6 @@ whomp
 whoof
 whoot
 whops
-whore
 whorl
 whort
 whoso

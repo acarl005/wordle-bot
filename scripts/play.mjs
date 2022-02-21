@@ -41,7 +41,7 @@ if (options.word) {
 } else if (options.date) {
   gm = GameMaster.forSpecificDate(guessSet, solutionArr, options.date)
 } else {
-  gm = GameMaster.forSpecificDate(guessSet, solutionArr, new Date)
+  gm = GameMaster.forSpecificDate(guessSet, solutionArr)
 }
 
 
@@ -81,13 +81,7 @@ class InteractiveGameLoop extends GameLoop {
 
   endTurn() {
     this.gameMaster.printPrettyFeedback()
-    console.log(
-      JSON.stringify(
-        this.player.knowledge,
-        (_, value) => (value instanceof Set ? [...value] : value),
-        4
-      )
-    )
+    //this.player.printKnowledge()
   }
 }
 

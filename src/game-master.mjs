@@ -18,17 +18,20 @@ const COLOR_MAP = {
 
 
 export class GameMaster {
-  static zeroDate = new Date("2021-06-19")
+  static zeroDate = new Date(2021, 5, 19, 0, 0, 0, 0)
 
 
   static forSpecificDate(possibleGuesses, possibleSolutions, thisDate) {
     if (thisDate === undefined) {
       thisDate = new Date
+    } else {
+      thisDate = new Date(thisDate)
     }
-    const timeDiffMs = thisDate.getTime() - GameMaster.zeroDate.getTime()
-    const timeDiffDays = Math.round(timeDiffMs / 1000 / 60 / 60 / 24)
+    const timeDiffMs = thisDate.setHours(0, 0, 0, 0) - GameMaster.zeroDate.getTime()
+    const timeDiffDays = Math.floor(timeDiffMs / 1000 / 60 / 60 / 24)
     const solutionIndex = timeDiffDays % possibleSolutions.length
-    return new GameMaster(possibleGuesses, possibleSolutions[solutionIndex])
+    const solution = possibleSolutions[solutionIndex]
+    return new GameMaster(possibleGuesses, solution)
   }
 
 
@@ -95,5 +98,3 @@ function multiMapRemove(map, key, elem) {
   }
 }
 
-
-let gm = GameMaster.forSpecificDate(guessSet, solutionArr)

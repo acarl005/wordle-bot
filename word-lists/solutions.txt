@@ -239,11 +239,9 @@ ulcer
 ultra
 robin
 cynic
-agora
 aroma
 caulk
 shake
-pupal
 dodge
 swill
 tacit
@@ -272,7 +270,6 @@ smelt
 tease
 cater
 movie
-lynch
 saute
 allow
 renew
@@ -293,7 +290,6 @@ trope
 fewer
 shawl
 natal
-fibre
 comma
 foray
 scare
@@ -303,7 +299,6 @@ squad
 royal
 chunk
 mince
-slave
 shame
 cheek
 ample
@@ -394,7 +389,6 @@ fluff
 hydro
 flack
 agape
-wench
 voice
 stead
 stalk

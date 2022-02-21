@@ -210,4 +210,14 @@ export class Player {
       }
     }
   }
+
+  printKnowledge() {
+    console.log(
+      JSON.stringify(
+        this.knowledge,
+        (_, value) => (value instanceof Set ? [...value] : value),
+        4
+      )
+    )
+  }
 }
