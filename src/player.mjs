@@ -2,7 +2,7 @@ const { List } = await import("immutable")
 
 const { WordleTrie } = await import("./trie.mjs")
 const { ALPHABET, Counter, newImmutableLetterCounter } = await import("./data-structs.mjs")
-const { maxKeyByVal, findIndices, areDisjoint, loadWords, intersect } = await import("./utilz.mjs")
+const { maxKeyByVal, findIndices, areDisjoint, loadWords, intersect, logistic } = await import("./utilz.mjs")
 
 
 const { solutionSet, guessSet } = loadWords()
@@ -13,7 +13,8 @@ export class Player {
   static greenVal = 1.2
   static yellowVal = 1
 
-  constructor(guessSet, solutionSet) {
+  constructor(guessSet, solutionSet, wordData) {
+    this.wordData = wordData
     this.solutionTrie = new WordleTrie
     this.guessTrie = new WordleTrie
 
@@ -38,15 +39,28 @@ export class Player {
       const wordLetterCounter = new Counter
       for (let i = 0; i < solution.length; i++) {
         const letter = solution[i]
-        this.positionLetterCounts[i][letter]++
+        this.positionLetterCounts[i][letter] += this.wordProb(solution)
         wordLetterCounter[letter]++
       }
       for (let [ch, count] of Object.entries(wordLetterCounter)) {
         for (let i = 1; i <= count; i++) {
-          this.masterWordLetterCounter[ch][i]++
+          this.masterWordLetterCounter[ch][i] += this.wordProb(solution)
         }
       }
     }
+  }
+
+
+  wordProb(word) {
+    if (!this.wordData || !(word in this.wordData)) {
+      return 1
+    }
+    const wordData = this.wordData[word]
+    let prob = logistic(wordData.freq, 8092908, 2.985e-7)
+    if (wordData.plural || wordData.pastTense || wordData.isName) {
+      prob /= 100
+    }
+    return prob
   }
 
 

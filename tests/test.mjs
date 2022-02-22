@@ -3,9 +3,11 @@ const { default: test } = await import("ava")
 const { GameLoop } = await import("../src/game-loop.mjs")
 const { GameMaster } = await import("../src/game-master.mjs")
 const { Player } = await import("../src/player.mjs")
-const { loadWords } = await import("../src/utilz.mjs")
+const { loadWords, loadWordData } = await import("../src/utilz.mjs")
 
-const { solutionArr, solutionSet, guessSet } = loadWords()
+
+const { guessSet } = await loadWords()
+const wordData = await loadWordData()
 
 
 class LoseGameError extends Error {}
@@ -19,7 +21,7 @@ class TestGameLoop extends GameLoop {
 
 
 test.beforeEach(t => {
-  t.context.player = new Player(guessSet, solutionSet)
+  t.context.player = new Player(guessSet, guessSet, wordData)
 })
 
 const wordsToTest = ["aroma", "death", "latch"]

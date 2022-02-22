@@ -4,10 +4,11 @@ const { default: prompts } = await import("prompts")
 const { GameLoop } = await import("../src/game-loop.mjs")
 const { GameMaster } = await import("../src/game-master.mjs")
 const { Player } = await import("../src/player.mjs")
-const { loadWords } = await import("../src/utilz.mjs")
+const { loadWords, loadWordData } = await import("../src/utilz.mjs")
 
 
-const { solutionArr, solutionSet, guessSet } = loadWords()
+const { guessSet, solutionArr } = await loadWords()
+const wordData = await loadWordData()
 
 
 function validateWord(val) {
@@ -86,7 +87,7 @@ class InteractiveGameLoop extends GameLoop {
 }
 
 
-const player = new Player(guessSet, solutionSet)
+const player = new Player(guessSet, guessSet, wordData)
 const gameLoop = new InteractiveGameLoop(gm, player)
 
 await gameLoop.play()

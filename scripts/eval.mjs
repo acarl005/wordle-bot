@@ -4,11 +4,12 @@ const { default: babar } = await import("babar")
 const { GameLoop } = await import("../src/game-loop.mjs")
 const { GameMaster } = await import("../src/game-master.mjs")
 const { Player } = await import("../src/player.mjs")
-const { loadWords } = await import("../src/utilz.mjs")
 const { Counter, DefaultDict } = await import("../src/data-structs.mjs")
+const { loadWords, loadWordData } = await import("../src/utilz.mjs")
 
 
-const { solutionArr, solutionSet, guessSet } = loadWords()
+const { guessSet, solutionArr } = await loadWords()
+const wordData = await loadWordData()
 
 
 const scoreCounts = new Counter
@@ -32,7 +33,7 @@ bar1.start(solutionArr.length, 0);
 
 for (let solution of solutionArr) {
   const gm = new GameMaster(guessSet, solution)
-  const player = new Player(guessSet, solutionSet)
+  const player = new Player(guessSet, guessSet, wordData)
   const gameLoop = new EvalGameLoop(gm, player, 10)
   await gameLoop.play()
   bar1.update(bar1.value + 1)

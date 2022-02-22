@@ -2,6 +2,8 @@ const fs = await import("fs")
 const path = await import("path")
 const { fileURLToPath } = await import("url")
 
+const { default: csv } = await import("@fast-csv/parse")
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,10 +66,53 @@ export function intersect(s1, s2) {
 const defaultSolutionFilePath = path.join(__dirname, "..", "word-lists", "solutions.txt")
 const defaultGuessFilePath = path.join(__dirname, "..", "word-lists", "guesses.txt")
 
-export function loadWords(solutionFilePath = defaultSolutionFilePath, guessFilePath = defaultGuessFilePath) {
-  const solutionArr = fs.readFileSync(solutionFilePath, "utf8").trim().split("\n").map(word => word.trim())
+export async function loadWords(solutionFilePath = defaultSolutionFilePath, guessFilePath = defaultGuessFilePath) {
+  const solutionArr = (await fs.promises.readFile(solutionFilePath, "utf8"))
+    .trim().split("\n").map(word => word.trim())
   const solutionSet = new Set(solutionArr)
-  let guessSet = new Set(fs.readFileSync(guessFilePath, "utf8").trim().split("\n").map(word => word.trim()))
+  let guessSet = new Set(
+    (await fs.promises.readFile(guessFilePath, "utf8"))
+      .trim().split("\n").map(word => word.trim())
+  )
   guessSet = union(guessSet, solutionSet)
   return { solutionArr, solutionSet, guessSet }
+}
+
+
+const defaultWordDataPath = path.join(__dirname, "..", "word-lists", "word-data.csv")
+
+export async function loadWordData(wordDataPath = defaultWordDataPath) {
+  const rawData = await loadCSV(wordDataPath)
+  const header = rawData.shift()
+  const headerMap = {}
+  for (let i = 0; i < header.length; i++) {
+    headerMap[header[i]] = i
+  }
+  const wordData = {}
+  for (let row of rawData) {
+    wordData[row[headerMap.word]] = {
+      freq: +row[headerMap.freq],
+      plural: +row[headerMap.plural],
+      pastTense: +row[headerMap.pastTense],
+      isName: +row[headerMap.isName],
+    }
+  }
+  return wordData
+}
+
+
+function loadCSV(filePath) {
+  return new Promise((resolve, reject) => {
+    const rows = []
+    fs.createReadStream(filePath)
+      .pipe(csv.parse())
+      .on("error", error => reject(error))
+      .on("data", row => rows.push(row))
+      .on("end", () => resolve(rows));
+  })
+}
+
+
+export function logistic(x, k, m) {
+  return 1 / (1 + Math.exp(-1 * k * (x - m)))
 }
