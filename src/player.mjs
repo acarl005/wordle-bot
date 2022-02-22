@@ -104,7 +104,7 @@ export class Player {
         }
       }
       const expectedValue = greenVal + yellowVal
-      const { word, value, debug } = this._calculateMaxValueGuess(guessTrie.children[nextLetter], updatedLetterCounter, sumExpectedValue + expectedValue, wordPosition + 1, debugList.push([expectedValue, `${yellowVal} (${yellowWeight} * ${Player.yellowVal})`, `${greenVal} (${greenWeight} * ${Player.greenVal})`]))
+      const { word, value, debug } = this._calculateMaxValueGuess(guessTrie.children[nextLetter], updatedLetterCounter, sumExpectedValue + expectedValue, wordPosition + 1, debugList.push([expectedValue.toFixed(2), `${yellowVal.toFixed(2)} (${yellowWeight.toFixed(2)} * ${Player.yellowVal})`, `${greenVal.toFixed(2)} (${greenWeight.toFixed(2)} * ${Player.greenVal})`]))
       if (value !== undefined) {
         childVals[nextLetter + word] = value
         childDebug[nextLetter + word] = debug
